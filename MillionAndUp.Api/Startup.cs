@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using MillionAndUp.Bussines;
 using MillionAndUp.Cross_Cutting.Auth;
 using MillionAndUp.Models.Interfaces;
+using MillionAndUp.Models.Mappers;
+using MillionAndUp.Persistence;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.IO;
@@ -26,12 +30,16 @@ namespace MillionAndUp.Api
         }
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //IMapper mapper = new MapperConfiguration((Action<IMapperConfigurationExpression>)(mc => mc.AddProfile((Profile)new MappingProfile()))).CreateMapper();
-            //services.AddSingleton<IMapper>(mapper);
-            //services.AddDbContext<SqlLiteDbContext>((Action<DbContextOptionsBuilder>)(options => SqliteDbContextOptionsBuilderExtensions.UseSqlite(options, Configuration.GetConnectionString("Sqlite"), (Action<SqliteDbContextOptionsBuilder>)(b => ((RelationalDbContextOptionsBuilder<SqliteDbContextOptionsBuilder, SqliteOptionsExtension>)b).MigrationsAssembly("MillionAndUp.Api")))));
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddDbContext<SqlLiteDbContext>(x => x.UseSqlite(Configuration.GetConnectionString("Sqlite"), x => x.MigrationsAssembly("MillionAndUp.Api")));
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOwnerBLL, OwnerBLL>();
             services.AddScoped<IPropertyBLL, PropertyBLL>();
