@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MillionAndUp.Bussines\MillionAndUp.Bussines.csproj" />
+    <ProjectReference Include="..\MillionAndUp.CrossCutting\MillionAndUp.CrossCutting.csproj" />
+    <ProjectReference Include="..\MillionAndUp.Models\MillionAndUp.Models.csproj" />
+    <ProjectReference Include="..\MillionAndUp.Persistence\MillionAndUp.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
